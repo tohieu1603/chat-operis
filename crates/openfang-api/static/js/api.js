@@ -1,8 +1,8 @@
-// OpenFang API Client — Fetch wrapper, WebSocket manager, auth injection, toast notifications
+// Operis API Client — Fetch wrapper, WebSocket manager, auth injection, toast notifications
 'use strict';
 
 // ── Toast Notification System ──
-var OpenFangToast = (function() {
+var OperisToast = (function() {
   var _container = null;
   var _toastId = 0;
 
@@ -117,7 +117,7 @@ var OpenFangToast = (function() {
 
 // ── Friendly Error Messages ──
 function friendlyError(status, serverMsg) {
-  if (status === 0 || !status) return 'Cannot reach daemon — is openfang running?';
+  if (status === 0 || !status) return 'Cannot reach daemon — Operis daemon is running?';
   if (status === 401) return 'Not authorized — check your API key';
   if (status === 403) return 'Permission denied';
   if (status === 404) return serverMsg || 'Resource not found';
@@ -129,7 +129,7 @@ function friendlyError(status, serverMsg) {
 }
 
 // ── API Client ──
-var OpenFangAPI = (function() {
+var OperisAPI = (function() {
   var BASE = window.location.origin;
   var WS_BASE = BASE.replace(/^http/, 'ws');
   var _authToken = '';
@@ -161,6 +161,17 @@ var OpenFangAPI = (function() {
     return fetch(BASE + path, opts).then(function(r) {
       if (_connectionState !== 'connected') setConnectionState('connected');
       if (!r.ok) {
+        // On 401, auto-show auth prompt so the user can re-enter their key
+        if (r.status === 401 && typeof Alpine !== 'undefined') {
+          try {
+            var store = Alpine.store('app');
+            if (store && !store.showAuthPrompt) {
+              _authToken = '';
+              localStorage.removeItem('openfang-api-key');
+              store.showAuthPrompt = true;
+            }
+          } catch(e2) { /* ignore Alpine errors */ }
+        }
         return r.text().then(function(text) {
           var msg = '';
           try {
@@ -180,7 +191,7 @@ var OpenFangAPI = (function() {
     }).catch(function(e) {
       if (e.name === 'TypeError' && e.message.includes('Failed to fetch')) {
         setConnectionState('disconnected');
-        throw new Error('Cannot connect to daemon — is openfang running?');
+        throw new Error('Cannot connect to daemon — Operis daemon is running?');
       }
       throw e;
     });
@@ -220,7 +231,7 @@ var OpenFangAPI = (function() {
         _reconnectAttempts = 0;
         setConnectionState('connected');
         if (_reconnectAttempt > 0) {
-          OpenFangToast.success('Reconnected');
+          OperisToast.success('Reconnected');
           _reconnectAttempt = 0;
         }
         if (_wsCallbacks.onOpen) _wsCallbacks.onOpen();
@@ -241,7 +252,7 @@ var OpenFangAPI = (function() {
           _reconnectAttempt = _reconnectAttempts;
           setConnectionState('reconnecting');
           if (_reconnectAttempts === 1) {
-            OpenFangToast.warn('Connection lost, reconnecting...');
+            OperisToast.warn('Connection lost, reconnecting...');
           }
           var delay = Math.min(1000 * Math.pow(2, _reconnectAttempts - 1), 10000);
           _reconnectTimer = setTimeout(function() { _doConnect(_wsAgentId); }, delay);
@@ -249,7 +260,7 @@ var OpenFangAPI = (function() {
         }
         if (_wsAgentId && _reconnectAttempts >= MAX_RECONNECT) {
           setConnectionState('disconnected');
-          OpenFangToast.error('Connection lost — switched to HTTP mode', 0);
+          OperisToast.error('Connection lost — switched to HTTP mode', 0);
         }
         if (_wsCallbacks.onClose) _wsCallbacks.onClose();
       };

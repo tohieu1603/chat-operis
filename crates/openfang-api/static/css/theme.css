@@ -1,139 +1,139 @@
-/* OpenFang Theme — Ant Design inspired design system */
+/* Operis Theme — Enterprise design system */
 
 /* Font imports in index_head.html: Inter (body) + Geist Mono (code) */
 
 [data-theme="light"], :root {
-  /* Backgrounds — Ant Design style */
-  --bg: #f5f5f5;
-  --bg-primary: #ffffff;
-  --bg-elevated: #fafafa;
-  --surface: #ffffff;
-  --surface2: #f5f5f5;
-  --surface3: #f0f0f0;
-  --border: #d9d9d9;
-  --border-light: #f0f0f0;
-  --border-subtle: #e8e8e8;
+  /* Backgrounds — clean & professional */
+  --bg: #F7F8FA;
+  --bg-primary: #EEF0F4;
+  --bg-elevated: #F9FAFB;
+  --surface: #FFFFFF;
+  --surface2: #F1F3F7;
+  --surface3: #E5E8EE;
+  --border: #D1D5DE;
+  --border-light: #C2C8D4;
+  --border-subtle: #E2E5EC;
 
-  /* Text hierarchy — Ant Design opacity system */
-  --text: rgba(0, 0, 0, 0.88);
-  --text-secondary: rgba(0, 0, 0, 0.65);
-  --text-dim: rgba(0, 0, 0, 0.45);
-  --text-muted: rgba(0, 0, 0, 0.25);
+  /* Text hierarchy */
+  --text: #111827;
+  --text-secondary: #374151;
+  --text-dim: #6B7280;
+  --text-muted: #9CA3AF;
 
-  /* Brand — Ant Design Blue */
-  --accent: #1677ff;
-  --accent-light: #4096ff;
-  --accent-dim: #0958d9;
-  --accent-glow: rgba(22, 119, 255, 0.1);
-  --accent-subtle: rgba(22, 119, 255, 0.06);
+  /* Brand — Operis Blue */
+  --accent: #2563EB;
+  --accent-light: #3B82F6;
+  --accent-dim: #1D4ED8;
+  --accent-glow: rgba(37, 99, 235, 0.12);
+  --accent-subtle: rgba(37, 99, 235, 0.05);
 
-  /* Status colors — Ant Design */
-  --success: #52c41a;
-  --success-dim: #389e0d;
-  --success-subtle: rgba(82, 196, 26, 0.08);
-  --error: #ff4d4f;
-  --error-dim: #cf1322;
-  --error-subtle: rgba(255, 77, 79, 0.06);
-  --warning: #faad14;
-  --warning-dim: #d48806;
-  --warning-subtle: rgba(250, 173, 20, 0.08);
-  --info: #1677ff;
-  --info-dim: #0958d9;
-  --info-subtle: rgba(22, 119, 255, 0.06);
-  --success-muted: rgba(82, 196, 26, 0.15);
-  --error-muted: rgba(255, 77, 79, 0.15);
-  --warning-muted: rgba(250, 173, 20, 0.15);
-  --info-muted: rgba(22, 119, 255, 0.15);
-  --border-strong: #bfbfbf;
-  --card-highlight: rgba(0, 0, 0, 0.02);
+  /* Status colors */
+  --success: #10B981;
+  --success-dim: #059669;
+  --success-subtle: rgba(16, 185, 129, 0.08);
+  --error: #EF4444;
+  --error-dim: #DC2626;
+  --error-subtle: rgba(239, 68, 68, 0.06);
+  --warning: #F59E0B;
+  --warning-dim: #D97706;
+  --warning-subtle: rgba(245, 158, 11, 0.08);
+  --info: #6366F1;
+  --info-dim: #4F46E5;
+  --info-subtle: rgba(99, 102, 241, 0.06);
+  --success-muted: rgba(16, 185, 129, 0.15);
+  --error-muted: rgba(239, 68, 68, 0.15);
+  --warning-muted: rgba(245, 158, 11, 0.15);
+  --info-muted: rgba(99, 102, 241, 0.15);
+  --border-strong: #A1A8B8;
+  --card-highlight: rgba(37, 99, 235, 0.02);
 
   /* Chat-specific */
-  --agent-bg: #f6f8fa;
-  --user-bg: #e6f4ff;
+  --agent-bg: #F3F4F8;
+  --user-bg: #EEF2FF;
 
   /* Layout */
   --sidebar-width: 240px;
   --sidebar-collapsed: 56px;
   --header-height: 48px;
 
-  /* Radius — Ant Design */
+  /* Radius — slightly larger for premium feel */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
 
-  /* Shadows — Ant Design shadow system */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
-  --shadow-md: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  --shadow-glow: none;
-  --shadow-accent: 0 2px 8px rgba(22, 119, 255, 0.15);
-  --shadow-inset: none;
+  /* Shadows — 6-level depth system */
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 28px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 40px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 40px rgba(0,0,0,0.05);
+  --shadow-accent: 0 4px 16px rgba(37, 99, 235, 0.15);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.5);
 
-  /* Typography — Ant Design font stack */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  /* Typography — dual font system */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
 
-  /* Motion — Ant Design timing */
-  --ease-spring: cubic-bezier(0.645, 0.045, 0.355, 1);
-  --ease-smooth: cubic-bezier(0.645, 0.045, 0.355, 1);
-  --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
-  --ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
-  --transition-fast: 0.1s var(--ease-smooth);
-  --transition-normal: 0.2s var(--ease-smooth);
-  --transition-spring: 0.3s var(--ease-smooth);
+  /* Motion — spring curves for premium feel */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --transition-fast: 0.15s var(--ease-smooth);
+  --transition-normal: 0.25s var(--ease-smooth);
+  --transition-spring: 0.4s var(--ease-spring);
 }
 
 [data-theme="dark"] {
-  --bg: #141414;
-  --bg-primary: #1f1f1f;
-  --bg-elevated: #262626;
-  --surface: #1f1f1f;
-  --surface2: #303030;
-  --surface3: #262626;
-  --border: #424242;
-  --border-light: #4a4a4a;
-  --border-subtle: #303030;
-  --text: rgba(255, 255, 255, 0.85);
-  --text-secondary: rgba(255, 255, 255, 0.65);
-  --text-dim: rgba(255, 255, 255, 0.45);
-  --text-muted: rgba(255, 255, 255, 0.25);
-  --accent: #1677ff;
-  --accent-light: #4096ff;
-  --accent-dim: #0958d9;
-  --accent-glow: rgba(22, 119, 255, 0.2);
-  --accent-subtle: rgba(22, 119, 255, 0.1);
-  --success: #49aa19;
-  --success-dim: #389e0d;
-  --success-subtle: rgba(73, 170, 25, 0.15);
-  --error: #dc4446;
-  --error-dim: #a8071a;
-  --error-subtle: rgba(220, 68, 70, 0.15);
-  --warning: #d89614;
-  --warning-dim: #d48806;
-  --warning-subtle: rgba(216, 150, 20, 0.15);
-  --info: #1668dc;
-  --info-dim: #0958d9;
-  --info-subtle: rgba(22, 104, 220, 0.15);
-  --success-muted: rgba(73, 170, 25, 0.25);
-  --error-muted: rgba(220, 68, 70, 0.25);
-  --warning-muted: rgba(216, 150, 20, 0.25);
-  --info-muted: rgba(22, 104, 220, 0.25);
-  --border-strong: #595959;
-  --card-highlight: rgba(255, 255, 255, 0.04);
-  --agent-bg: #262626;
-  --user-bg: #111d2c;
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 3px 6px -4px rgba(0, 0, 0, 0.48);
-  --shadow-lg: 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 3px 6px -4px rgba(0, 0, 0, 0.48);
-  --shadow-xl: 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 3px 6px -4px rgba(0, 0, 0, 0.48);
-  --shadow-glow: none;
-  --shadow-accent: 0 2px 8px rgba(22, 119, 255, 0.3);
-  --shadow-inset: none;
+  --bg: #0B0F1A;
+  --bg-primary: #111827;
+  --bg-elevated: #1A2035;
+  --surface: #1F2937;
+  --surface2: #283548;
+  --surface3: #1A2035;
+  --border: #2D3A50;
+  --border-light: #3B4A63;
+  --border-subtle: #232F45;
+  --text: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-dim: #94A3B8;
+  --text-muted: #64748B;
+  --accent: #3B82F6;
+  --accent-light: #60A5FA;
+  --accent-dim: #2563EB;
+  --accent-glow: rgba(59, 130, 246, 0.2);
+  --accent-subtle: rgba(59, 130, 246, 0.1);
+  --success: #34D399;
+  --success-dim: #10B981;
+  --success-subtle: rgba(52, 211, 153, 0.12);
+  --error: #F87171;
+  --error-dim: #EF4444;
+  --error-subtle: rgba(248, 113, 113, 0.12);
+  --warning: #FBBF24;
+  --warning-dim: #F59E0B;
+  --warning-subtle: rgba(251, 191, 36, 0.12);
+  --info: #818CF8;
+  --info-dim: #6366F1;
+  --info-subtle: rgba(129, 140, 248, 0.12);
+  --success-muted: rgba(52, 211, 153, 0.25);
+  --error-muted: rgba(248, 113, 113, 0.25);
+  --warning-muted: rgba(251, 191, 36, 0.25);
+  --info-muted: rgba(129, 140, 248, 0.25);
+  --border-strong: #4B5B75;
+  --card-highlight: rgba(59, 130, 246, 0.04);
+  --agent-bg: #1A2035;
+  --user-bg: #1A2545;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 28px rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.35);
+  --shadow-xl: 0 20px 40px rgba(0,0,0,0.5), 0 8px 16px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 80px rgba(0,0,0,0.7);
+  --shadow-accent: 0 4px 16px rgba(59, 130, 246, 0.25);
+  --shadow-inset: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -149,8 +149,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
-  line-height: 1.5715;
-  letter-spacing: normal;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
 }
 
 /* Mono text utility — only for code/data */
@@ -171,31 +171,31 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: #fff;
+  color: var(--bg-primary);
 }
 
-/* Theme transition */
+/* Theme transition — smooth switch between light/dark */
 body {
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 .sidebar, .main-content, .card, .modal, .tool-card, .toast, .page-header {
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Tighter letter spacing for headings */
 h1, h2, h3, .card-header, .stat-value, .page-header h2 { letter-spacing: -0.02em; }
 .nav-section-title, .badge, th { letter-spacing: 0.04em; }
 
-/* Focus styles — Ant Design style */
+/* Focus styles — accessible double-ring with glow */
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 1px;
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--accent-glow);
 }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 1px;
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--accent-glow);
 }
 
 /* Entrance animations */
@@ -236,10 +236,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 /* Staggered card entry animation */
 @keyframes cardEntry {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.animate-entry { animation: cardEntry 0.3s var(--ease-smooth) both; }
+.animate-entry { animation: cardEntry 0.35s var(--ease-spring) both; }
 .stagger-1 { animation-delay: 0.05s; }
 .stagger-2 { animation-delay: 0.10s; }
 .stagger-3 { animation-delay: 0.15s; }

@@ -1,4 +1,4 @@
-/* OpenFang Layout — Grid + Sidebar + Responsive */
+/* Operis Layout — Grid + Sidebar + Responsive */
 
 .app-layout {
   display: flex;
@@ -10,12 +10,13 @@
 .sidebar {
   width: var(--sidebar-width);
   background: var(--bg-primary);
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
   transition: width var(--transition-normal);
   z-index: 100;
+  box-shadow: 1px 0 8px rgba(0,0,0,0.03);
 }
 
 .sidebar.collapsed {
@@ -55,12 +56,26 @@
   transform: scale(1.05);
 }
 
+[data-theme="light"] .sidebar-logo img,
+[data-theme="light"] .message-avatar img {
+  filter: invert(1);
+}
+
 .sidebar-header h1 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--text);
-  letter-spacing: 1px;
+  letter-spacing: 0.08em;
   font-family: var(--font-sans);
+}
+
+.operis-brand-icon svg {
+  filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.operis-brand-icon svg:hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 3px 8px rgba(37, 99, 235, 0.4));
 }
 
 .sidebar-header .version {
@@ -148,10 +163,10 @@
 }
 
 .nav-item.active {
-  background: var(--accent-subtle);
-  color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-primary);
   font-weight: 600;
-  border-right: 3px solid var(--accent);
+  box-shadow: var(--shadow-sm), 0 2px 8px rgba(255, 92, 0, 0.2);
 }
 
 .nav-icon {

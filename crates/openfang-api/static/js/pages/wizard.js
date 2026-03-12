@@ -1,5 +1,15 @@
-// OpenFang Setup Wizard — First-run guided setup (Provider + Agent + Channel)
+// Operis Setup Wizard — First-run guided setup (Provider + Agent + Channel)
 'use strict';
+
+/** Escape a string for use inside TOML triple-quoted strings ("""\n...\n"""). */
+function wizardTomlMultilineEscape(s) {
+  return s.replace(/\\/g, '\\\\').replace(/"""/g, '""\\"');
+}
+
+/** Escape a string for use inside a TOML basic (single-line) string ("..."). */
+function wizardTomlBasicEscape(s) {
+  return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
+}
 
 function wizardPage() {
   return {
@@ -183,7 +193,7 @@ function wizardPage() {
       this.tryItMessages.push({ role: 'user', text: text });
       this.tryItSending = true;
       try {
-        var res = await OpenFangAPI.post('/api/agents/' + this.createdAgent.id + '/message', { message: text });
+        var res = await OperisAPI.post('/api/agents/' + this.createdAgent.id + '/message', { message: text });
         this.tryItMessages.push({ role: 'agent', text: res.response || '(no response)' });
         localStorage.setItem('of-first-msg', 'true');
       } catch(e) {
@@ -283,10 +293,12 @@ function wizardPage() {
     },
 
     get canGoNext() {
-      if (this.step === 2) return this.keySaved || this.hasConfiguredProvider;
+      if (this.step === 2) return this.keySaved || this.hasConfiguredProvider || this.claudeCodeDetected;
       if (this.step === 3) return this.agentName.trim().length > 0;
       return true;
     },
+
+    claudeCodeDetected: false,
 
     get hasConfiguredProvider() {
       var self = this;
@@ -299,7 +311,7 @@ function wizardPage() {
 
     async loadProviders() {
       try {
-        var data = await OpenFangAPI.get('/api/providers');
+        var data = await OperisAPI.get('/api/providers');
         this.providers = data.providers || [];
         // Pre-select first unconfigured provider, or first one
         var unconfigured = this.providers.filter(function(p) {
@@ -320,7 +332,7 @@ function wizardPage() {
     },
 
     get popularProviders() {
-      var popular = ['anthropic', 'openai', 'gemini', 'groq', 'deepseek', 'openrouter'];
+      var popular = ['anthropic', 'openai', 'gemini', 'groq', 'deepseek', 'openrouter', 'claude-code'];
       return this.providers.filter(function(p) {
         return popular.indexOf(p.id) >= 0;
       }).sort(function(a, b) {
@@ -329,7 +341,7 @@ function wizardPage() {
     },
 
     get otherProviders() {
-      var popular = ['anthropic', 'openai', 'gemini', 'groq', 'deepseek', 'openrouter'];
+      var popular = ['anthropic', 'openai', 'gemini', 'groq', 'deepseek', 'openrouter', 'claude-code'];
       return this.providers.filter(function(p) {
         return popular.indexOf(p.id) < 0;
       });
@@ -355,7 +367,8 @@ function wizardPage() {
         fireworks: { url: 'https://fireworks.ai/account/api-keys', text: 'Get your key from Fireworks AI' },
         perplexity: { url: 'https://www.perplexity.ai/settings/api', text: 'Get your key from Perplexity Settings' },
         cohere: { url: 'https://dashboard.cohere.com/api-keys', text: 'Get your key from the Cohere Dashboard' },
-        xai: { url: 'https://console.x.ai/', text: 'Get your key from the xAI Console' }
+        xai: { url: 'https://console.x.ai/', text: 'Get your key from the xAI Console' },
+        'claude-code': { url: 'https://docs.anthropic.com/en/docs/claude-code', text: 'Install: npm install -g @anthropic-ai/claude-code && claude auth (no API key needed)' }
       };
       return help[id] || null;
     },
@@ -369,21 +382,21 @@ function wizardPage() {
       if (!provider) return;
       var key = this.apiKeyInput.trim();
       if (!key) {
-        OpenFangToast.error('Please enter an API key');
+        OperisToast.error('Please enter an API key');
         return;
       }
       this.savingKey = true;
       try {
-        await OpenFangAPI.post('/api/providers/' + encodeURIComponent(provider.id) + '/key', { key: key });
+        await OperisAPI.post('/api/providers/' + encodeURIComponent(provider.id) + '/key', { key: key });
         this.apiKeyInput = '';
         this.keySaved = true;
         this.setupSummary.provider = provider.display_name;
-        OpenFangToast.success('API key saved for ' + provider.display_name);
+        OperisToast.success('API key saved for ' + provider.display_name);
         await this.loadProviders();
         // Auto-test after saving
         await this.testKey();
       } catch(e) {
-        OpenFangToast.error('Failed to save key: ' + e.message);
+        OperisToast.error('Failed to save key: ' + e.message);
       }
       this.savingKey = false;
     },
@@ -394,16 +407,38 @@ function wizardPage() {
       this.testingProvider = true;
       this.testResult = null;
       try {
-        var result = await OpenFangAPI.post('/api/providers/' + encodeURIComponent(provider.id) + '/test', {});
+        var result = await OperisAPI.post('/api/providers/' + encodeURIComponent(provider.id) + '/test', {});
         this.testResult = result;
         if (result.status === 'ok') {
-          OpenFangToast.success(provider.display_name + ' connected (' + (result.latency_ms || '?') + 'ms)');
+          OperisToast.success(provider.display_name + ' connected (' + (result.latency_ms || '?') + 'ms)');
         } else {
-          OpenFangToast.error(provider.display_name + ': ' + (result.error || 'Connection failed'));
+          OperisToast.error(provider.display_name + ': ' + (result.error || 'Connection failed'));
         }
       } catch(e) {
         this.testResult = { status: 'error', error: e.message };
-        OpenFangToast.error('Test failed: ' + e.message);
+        OperisToast.error('Test failed: ' + e.message);
+      }
+      this.testingProvider = false;
+    },
+
+    async detectClaudeCode() {
+      this.testingProvider = true;
+      this.testResult = null;
+      try {
+        var result = await OperisAPI.post('/api/providers/claude-code/test', {});
+        this.testResult = result;
+        if (result.status === 'ok') {
+          this.claudeCodeDetected = true;
+          this.keySaved = true;
+          this.setupSummary.provider = 'Claude Code';
+          OperisToast.success('Claude Code detected (' + (result.latency_ms || '?') + 'ms)');
+        } else {
+          this.testResult = { status: 'error', error: 'Claude Code CLI not detected' };
+          OperisToast.error('Claude Code CLI not detected. Make sure you\'ve run: npm install -g @anthropic-ai/claude-code && claude auth');
+        }
+      } catch(e) {
+        this.testResult = { status: 'error', error: e.message };
+        OperisToast.error('Claude Code CLI not detected. Make sure you\'ve run: npm install -g @anthropic-ai/claude-code && claude auth');
       }
       this.testingProvider = false;
     },
@@ -423,7 +458,7 @@ function wizardPage() {
       if (!tpl) return;
       var name = this.agentName.trim();
       if (!name) {
-        OpenFangToast.error('Please enter a name for your agent');
+        OperisToast.error('Please enter a name for your agent');
         return;
       }
 
@@ -437,26 +472,26 @@ function wizardPage() {
       }
 
       var toml = '[agent]\n';
-      toml += 'name = "' + name.replace(/"/g, '\\"') + '"\n';
-      toml += 'description = "' + tpl.description.replace(/"/g, '\\"') + '"\n';
+      toml += 'name = "' + wizardTomlBasicEscape(name) + '"\n';
+      toml += 'description = "' + wizardTomlBasicEscape(tpl.description) + '"\n';
       toml += 'profile = "' + tpl.profile + '"\n\n';
       toml += '[model]\nprovider = "' + provider + '"\n';
       toml += 'model = "' + model + '"\n';
-      toml += 'system_prompt = """\n' + tpl.system_prompt + '\n"""\n';
+      toml += 'system_prompt = """\n' + wizardTomlMultilineEscape(tpl.system_prompt) + '\n"""\n';
 
       this.creatingAgent = true;
       try {
-        var res = await OpenFangAPI.post('/api/agents', { manifest_toml: toml });
+        var res = await OperisAPI.post('/api/agents', { manifest_toml: toml });
         if (res.agent_id) {
           this.createdAgent = { id: res.agent_id, name: res.name || name };
           this.setupSummary.agent = res.name || name;
-          OpenFangToast.success('Agent "' + (res.name || name) + '" created');
+          OperisToast.success('Agent "' + (res.name || name) + '" created');
           await Alpine.store('app').refreshAgents();
         } else {
-          OpenFangToast.error('Failed: ' + (res.error || 'Unknown error'));
+          OperisToast.error('Failed: ' + (res.error || 'Unknown error'));
         }
       } catch(e) {
-        OpenFangToast.error('Failed to create agent: ' + e.message);
+        OperisToast.error('Failed to create agent: ' + e.message);
       }
       this.creatingAgent = false;
     },
@@ -468,13 +503,14 @@ function wizardPage() {
         gemini: 'gemini-2.5-flash',
         groq: 'llama-3.3-70b-versatile',
         deepseek: 'deepseek-chat',
-        openrouter: 'openrouter/auto',
+        openrouter: 'openrouter/google/gemini-2.5-flash',
         mistral: 'mistral-large-latest',
         together: 'meta-llama/Llama-3-70b-chat-hf',
         fireworks: 'accounts/fireworks/models/llama-v3p1-70b-instruct',
         perplexity: 'llama-3.1-sonar-large-128k-online',
         cohere: 'command-r-plus',
-        xai: 'grok-2'
+        xai: 'grok-2',
+        'claude-code': 'claude-code/sonnet'
       };
       return defaults[providerId] || '';
     },
@@ -502,7 +538,7 @@ function wizardPage() {
       if (!ch) return;
       var token = this.channelToken.trim();
       if (!token) {
-        OpenFangToast.error('Please enter the ' + ch.token_label);
+        OperisToast.error('Please enter the ' + ch.token_label);
         return;
       }
       this.configuringChannel = true;
@@ -510,12 +546,12 @@ function wizardPage() {
         var fields = {};
         fields[ch.token_env.toLowerCase()] = token;
         fields.token = token;
-        await OpenFangAPI.post('/api/channels/' + ch.name + '/configure', { fields: fields });
+        await OperisAPI.post('/api/channels/' + ch.name + '/configure', { fields: fields });
         this.channelConfigured = true;
         this.setupSummary.channel = ch.display_name;
-        OpenFangToast.success(ch.display_name + ' configured and activated.');
+        OperisToast.success(ch.display_name + ' configured and activated.');
       } catch(e) {
-        OpenFangToast.error('Failed: ' + (e.message || 'Unknown error'));
+        OperisToast.error('Failed: ' + (e.message || 'Unknown error'));
       }
       this.configuringChannel = false;
     },
@@ -523,7 +559,7 @@ function wizardPage() {
     // ── Step 6: Finish ──
 
     finish() {
-      localStorage.setItem('openfang-onboarded', 'true');
+      localStorage.setItem('operis-onboarded', 'true');
       Alpine.store('app').showOnboarding = false;
       // Navigate to agents with chat if an agent was created, otherwise overview
       if (this.createdAgent) {
@@ -536,7 +572,7 @@ function wizardPage() {
     },
 
     finishAndDismiss() {
-      localStorage.setItem('openfang-onboarded', 'true');
+      localStorage.setItem('operis-onboarded', 'true');
       Alpine.store('app').showOnboarding = false;
       window.location.hash = 'overview';
     }
